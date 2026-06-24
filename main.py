@@ -1,3 +1,8 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import psycopg2
 from fastapi import FastAPI, Query
 from psycopg2.extras import RealDictCursor
@@ -5,12 +10,15 @@ from psycopg2.pool import SimpleConnectionPool
 
 app = FastAPI()
 
-DATABASE_URL = "postgresql://neondb_owner:npg_4FMEBlZTV1Pq@ep-curly-darkness-aig82w45.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL = os.getenv("DATABASE_URL")
+# Ensure the DATABASE_URL is provided (from environment or .env)
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL not set. Add it to a .env file or set the environment variable.")
 
 # 🔥 CONNECTION POOL (THIS FIXES STUCK ISSUE)
 pool = SimpleConnectionPool(
     1, 10,
-    "postgresql://neondb_owner:npg_4FMEBlZTV1Pq@ep-curly-darkness-aig82w45.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require"
+    DATABASE_URL
 )
 
 
